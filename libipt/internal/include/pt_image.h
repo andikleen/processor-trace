@@ -65,6 +65,15 @@ struct pt_image {
 		void *context;
 	} readmem;
 
+	/* An optional new_cr3 callback. */
+	struct {
+		/* The callback function. */
+		new_cr3_callback_t *callback;
+
+		/* The callback context. */
+		void *context;
+	} new_cr3;
+
 	/* The cache size as number of to-keep-mapped sections. */
 	uint16_t cache;
 

@@ -378,6 +378,18 @@ int pt_image_set_callback(struct pt_image *image,
 	return 0;
 }
 
+int pt_image_set_new_cr3_callback(struct pt_image *image,
+			  new_cr3_callback_t *callback, void *context)
+{
+	if (!image)
+		return -pte_invalid;
+
+	image->new_cr3.callback = callback;
+	image->new_cr3.context = context;
+
+	return 0;
+}
+
 static int pt_image_prune_cache(struct pt_image *image)
 {
 	struct pt_section_list *list;
@@ -417,11 +429,10 @@ static int pt_image_prune_cache(struct pt_image *image)
 	return status;
 }
 
-int pt_image_read(struct pt_image *image, uint8_t *buffer, uint16_t size,
+static int pt_image_read2(struct pt_image *image, uint8_t *buffer, uint16_t size,
 		  const struct pt_asid *asid, uint64_t addr)
 {
 	struct pt_section_list **list, **start;
-	read_memory_callback_t *callback;
 	int status;
 
 	if (!image || !asid)
@@ -493,10 +504,29 @@ int pt_image_read(struct pt_image *image, uint8_t *buffer, uint16_t size,
 		return status;
 	}
 
+	return -pte_nomap;
+}
+
+int pt_image_read(struct pt_image *image, uint8_t *buffer, uint16_t size,
+		  const struct pt_asid *asid, uint64_t addr)
+{
+	read_memory_callback_t *callback;
+	int err;
+
+	err = pt_image_read2(image, buffer, size, asid, addr);
+	if (err == -pte_nomap && image->new_cr3.callback) {
+		err = image->new_cr3.callback(image, image->new_cr3.context,
+				     asid->cr3, addr);
+		if (err < 0)
+			return err;
+		/* Try again, hoping the callback added the missing file. */
+		err = pt_image_read2(image, buffer, size, asid, addr);
+		if (!err)
+			return err;
+	}
 	callback = image->readmem.callback;
 	if (callback)
 		return callback(buffer, size, asid, addr,
 				image->readmem.context);
-
-	return -pte_nomap;
+	return err;
 }

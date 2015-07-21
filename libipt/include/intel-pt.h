@@ -1377,7 +1377,37 @@ extern pt_export int pt_image_set_callback(struct pt_image *image,
 					   read_memory_callback_t *callback,
 					   void *context);
 
+/** A new CR3 callback function
+ *
+ * Called when the decoder sees a new unknown CR3 value. Useful to load
+ * binaries lazily only when they are encountered in the trace.
+ * Can add new files to the image.
+ *
+ * \@image Image pointer
+ * \@cr3   New cr3 value
+ * \@context User defined context
+ * \@ip    Current IP
+ *
+ * It shall return zero on success.
+ * It shall return a negative pt_error_code otherwise.
+ */
 
+typedef int (new_cr3_callback_t)(struct pt_image *image, uint64_t cr3, void *context, uint64_t ip);
+
+/** Set the new_cr3 callback for the traced memory image.
+ *
+ * Sets \@callback for handling unknown CR3 values.
+ * The \@context argument is passed to \@callback on each use.
+ *
+ * There can only be one callback at any time.  A subsequent call will replace
+ * the previous callback.  If \@callback is NULL, the callback is removed.
+ *
+ * Returns -pte_invalid if \@image is NULL.
+ */
+
+extern pt_export int pt_image_set_new_cr3_callback(struct pt_image *image,
+					   new_cr3_callback_t *callback,
+					   void *context);
 
 /* Instruction flow decoder. */
 
