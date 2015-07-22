@@ -28,8 +28,6 @@
 
 #include "ptunit.h"
 
-#include "pt_cpu.h"
-
 #include "intel-pt.h"
 
 #include <stdlib.h>

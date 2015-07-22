@@ -616,6 +616,27 @@ static inline void pt_config_init(struct pt_config *config)
 extern pt_export int pt_cpu_errata(struct pt_errata *errata,
 				   const struct pt_cpu *cpu);
 
+/* CPU setup */
+
+/* Parses @s which should be of format family/model[/stepping] and
+ * stores the value in @cpu on success.
+ * The optional stepping defaults to 0 if omitted.
+ *
+ * Returns 0 on success.
+ * Returns -pte_invalid if @cpu or @s is NULL.
+ * Returns -pte_invalid if @s could not be parsed.
+ */
+extern pt_export int pt_cpu_parse(struct pt_cpu *cpu, const char *s);
+
+/* Get the cpu we're running on.
+ *
+ * Reads the family/model/stepping of the processor on which this function
+ * is executed and stores the value in @cpu.
+ *
+ * Returns zero on success, a negative error code otherwise.
+ * Returns -pte_invalid if @cpu is NULL.
+ */
+extern pt_export int pt_cpu_read(struct pt_cpu *cpu);
 
 
 /* Packet encoder / decoder. */
