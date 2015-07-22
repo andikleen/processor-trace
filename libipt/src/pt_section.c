@@ -52,7 +52,7 @@ static char *dupstr(const char *str)
 }
 
 struct pt_section *pt_mk_section(const char *filename, uint64_t offset,
-				 uint64_t size)
+				 uint64_t size, void *context)
 {
 	struct pt_section *section;
 	uint64_t fsize;
@@ -83,6 +83,7 @@ struct pt_section *pt_mk_section(const char *filename, uint64_t offset,
 	section->offset = offset;
 	section->size = size;
 	section->ucount = 1;
+	section->context = context;
 
 #if defined(FEATURE_THREADS)
 

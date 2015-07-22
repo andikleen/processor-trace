@@ -75,6 +75,9 @@ struct pt_insn_decoder {
 	/* The status of the last decoder query. */
 	int status;
 
+	/* Last read user image context. */
+	void *last_context;
+
 	/* A collection of flags defining how to proceed flow reconstruction:
 	 *
 	 * - tracing is enabled.

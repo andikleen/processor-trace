@@ -117,6 +117,7 @@ extern int pt_image_remove(struct pt_image *image, struct pt_section *section,
 /* Read memory from an image.
  *
  * Reads at most @size bytes from @image at @addr in @asid into @buffer.
+ * Store user context into @context.
  *
  * Returns the number of bytes read on success, a negative error code otherwise.
  * Returns -pte_internal if @image, @buffer, or @asid is NULL.
@@ -124,6 +125,6 @@ extern int pt_image_remove(struct pt_image *image, struct pt_section *section,
  */
 extern int pt_image_read(struct pt_image *image, uint8_t *buffer,
 			 uint16_t size, const struct pt_asid *asid,
-			 uint64_t addr);
+			 uint64_t addr, void **context);
 
 #endif /* __PT_IMAGE_H__ */

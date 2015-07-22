@@ -82,6 +82,9 @@ struct pt_section {
 	int (*read)(const struct pt_section *sec, uint8_t *buffer,
 		    uint16_t size, uint64_t offset);
 
+	/* User specific context */
+	void *context;
+
 #if defined(FEATURE_THREADS)
 	/* A lock protecting this section.
 	 *
@@ -101,7 +104,7 @@ struct pt_section {
 /* Create a section.
  *
  * The returned section describes the contents of @file starting at @offset
- * for @size bytes.
+ * for @size bytes with context \@context.
  *
  * If @file is shorter than the requested @size, the section is silently
  * truncated to the size of @file.
@@ -113,7 +116,8 @@ struct pt_section {
  * Returns a new section on success, NULL otherwise.
  */
 extern struct pt_section *pt_mk_section(const char *file, uint64_t offset,
-					uint64_t size);
+					uint64_t size,
+					void *context);
 
 /* Lock a section.
  *

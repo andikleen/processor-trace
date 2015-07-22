@@ -205,6 +205,14 @@ struct pt_image *pt_insn_get_image(struct pt_insn_decoder *decoder)
 	return decoder->image;
 }
 
+void *pt_insn_get_image_context(struct pt_insn_decoder *decoder)
+{
+	if (!decoder)
+		return NULL;
+
+	return decoder->last_context;
+}
+
 int pt_insn_set_image(struct pt_insn_decoder *decoder,
 		      struct pt_image *image)
 {
@@ -389,7 +397,7 @@ static int decode_insn(struct pt_insn *insn, struct pt_insn_decoder *decoder)
 
 	/* Read the memory at the current IP in the current address space. */
 	size = pt_image_read(decoder->image, insn->raw, sizeof(insn->raw),
-			     &decoder->asid, decoder->ip);
+			     &decoder->asid, decoder->ip, &decoder->last_context);
 	if (size < 0)
 		return size;
 
@@ -454,7 +462,7 @@ static int pt_ip_is_ahead(struct pt_insn_decoder *decoder, uint64_t ip,
 		 * reach it.
 		 */
 		size = pt_image_read(decoder->image, raw, sizeof(raw),
-				     &decoder->asid, at);
+				     &decoder->asid, at, &decoder->last_context);
 		if (size < 0)
 			return 0;
 

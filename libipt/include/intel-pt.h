@@ -1331,6 +1331,20 @@ extern pt_export int pt_image_add_file(struct pt_image *image,
 				       const struct pt_asid *asid,
 				       uint64_t vaddr);
 
+/** Add a new file section to the traced memory image with context.
+ *
+ * Like pt_image_add_file, but also store a \@context pointer that
+ * can be later retrieved.
+ */
+
+extern pt_export int pt_image_add_file_context(struct pt_image *image,
+				       const char *filename, uint64_t offset,
+				       uint64_t size,
+				       const struct pt_asid *asid,
+				       uint64_t vaddr,
+				       void *context);
+
+
 /** Copy an image.
  *
  * Adds all sections from \@src to \@image.  Sections that would overlap with
@@ -1619,6 +1633,16 @@ extern pt_export int pt_insn_get_cr3(struct pt_insn_decoder *decoder,
  */
 extern pt_export struct pt_image *
 pt_insn_get_image(struct pt_insn_decoder *decoder);
+
+/** Get the user context for the last instruction.
+ *
+ * Retrieve the user context pointer set by pt_image_file_add_context for
+ * the last reported instruction for \@decoder.
+ *
+ * Returns NULL if \@decoder is NULL.
+ */
+extern pt_export void *
+pt_insn_get_image_context(struct pt_insn_decoder *decoder);
 
 /** Set the traced image.
  *

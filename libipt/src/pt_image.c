@@ -225,9 +225,10 @@ int pt_image_remove(struct pt_image *image, struct pt_section *section,
 	return -pte_bad_image;
 }
 
-int pt_image_add_file(struct pt_image *image, const char *filename,
+int pt_image_add_file_context(struct pt_image *image, const char *filename,
 		      uint64_t offset, uint64_t size,
-		      const struct pt_asid *uasid, uint64_t vaddr)
+		      const struct pt_asid *uasid, uint64_t vaddr,
+		      void *context)
 {
 	struct pt_section *section;
 	struct pt_asid asid;
@@ -240,7 +241,7 @@ int pt_image_add_file(struct pt_image *image, const char *filename,
 	if (errcode < 0)
 		return errcode;
 
-	section = pt_mk_section(filename, offset, size);
+	section = pt_mk_section(filename, offset, size, context);
 	if (!section)
 		return -pte_invalid;
 
@@ -256,6 +257,14 @@ int pt_image_add_file(struct pt_image *image, const char *filename,
 		return errcode;
 
 	return 0;
+}
+
+int pt_image_add_file(struct pt_image *image, const char *filename,
+		      uint64_t offset, uint64_t size,
+		      const struct pt_asid *uasid, uint64_t vaddr)
+{
+	return pt_image_add_file_context(image, filename, offset, size,
+					  uasid, vaddr, NULL);
 }
 
 int pt_image_copy(struct pt_image *image, const struct pt_image *src)
@@ -430,7 +439,7 @@ static int pt_image_prune_cache(struct pt_image *image)
 }
 
 static int pt_image_read2(struct pt_image *image, uint8_t *buffer, uint16_t size,
-		  const struct pt_asid *asid, uint64_t addr)
+		  const struct pt_asid *asid, uint64_t addr, void **context)
 {
 	struct pt_section_list **list, **start;
 	int status;
@@ -501,6 +510,9 @@ static int pt_image_read2(struct pt_image *image, uint8_t *buffer, uint16_t size
 			}
 		}
 
+		if (context)
+			*context = sec->context;
+
 		return status;
 	}
 
@@ -508,19 +520,19 @@ static int pt_image_read2(struct pt_image *image, uint8_t *buffer, uint16_t size
 }
 
 int pt_image_read(struct pt_image *image, uint8_t *buffer, uint16_t size,
-		  const struct pt_asid *asid, uint64_t addr)
+		  const struct pt_asid *asid, uint64_t addr, void **context)
 {
 	read_memory_callback_t *callback;
 	int err;
 
-	err = pt_image_read2(image, buffer, size, asid, addr);
+	err = pt_image_read2(image, buffer, size, asid, addr, context);
 	if (err == -pte_nomap && image->new_cr3.callback) {
 		err = image->new_cr3.callback(image, image->new_cr3.context,
 				     asid->cr3, addr);
 		if (err < 0)
 			return err;
 		/* Try again, hoping the callback added the missing file. */
-		err = pt_image_read2(image, buffer, size, asid, addr);
+		err = pt_image_read2(image, buffer, size, asid, addr, context);
 		if (!err)
 			return err;
 	}

@@ -90,7 +90,7 @@ static struct ptunit_result create(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	name = pt_section_filename(sfix->section);
@@ -104,7 +104,7 @@ static struct ptunit_result create(struct section_fixture *sfix)
 
 static struct ptunit_result create_bad_offset(struct section_fixture *sfix)
 {
-	sfix->section = pt_mk_section(sfix->name, 0x10ull, 0x0ull);
+	sfix->section = pt_mk_section(sfix->name, 0x10ull, 0x0ull, NULL);
 	ptu_null(sfix->section);
 
 	return ptu_passed();
@@ -118,7 +118,7 @@ static struct ptunit_result create_truncated(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, UINT64_MAX);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, UINT64_MAX, NULL);
 	ptu_ptr(sfix->section);
 
 	name = pt_section_filename(sfix->section);
@@ -132,7 +132,7 @@ static struct ptunit_result create_truncated(struct section_fixture *sfix)
 
 static struct ptunit_result create_empty(struct section_fixture *sfix)
 {
-	sfix->section = pt_mk_section(sfix->name, 0x0ull, 0x10ull);
+	sfix->section = pt_mk_section(sfix->name, 0x0ull, 0x10ull, NULL);
 	ptu_null(sfix->section);
 
 	return ptu_passed();
@@ -175,7 +175,7 @@ static struct ptunit_result get_overflow(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	sfix->section->ucount = UINT16_MAX;
@@ -225,7 +225,7 @@ static struct ptunit_result map_change(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	sfix_write(sfix, bytes);
@@ -243,7 +243,7 @@ static struct ptunit_result map_put(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	errcode = pt_section_map(sfix->section);
@@ -265,7 +265,7 @@ static struct ptunit_result unmap_nomap(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	errcode = pt_section_unmap(sfix->section);
@@ -281,7 +281,7 @@ static struct ptunit_result map_overflow(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	sfix->section->mcount = UINT16_MAX;
@@ -301,7 +301,7 @@ static struct ptunit_result get_put(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	errcode = pt_section_get(sfix->section);
@@ -326,7 +326,7 @@ static struct ptunit_result map_unmap(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	errcode = pt_section_map(sfix->section);
@@ -352,7 +352,7 @@ static struct ptunit_result read(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_map(sfix->section);
@@ -378,7 +378,7 @@ static struct ptunit_result read_offset(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_map(sfix->section);
@@ -403,7 +403,7 @@ static struct ptunit_result read_truncated(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_map(sfix->section);
@@ -427,7 +427,7 @@ static struct ptunit_result read_from_truncated(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x2ull, 0x10ull);
+	sfix->section = pt_mk_section(sfix->name, 0x2ull, 0x10ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_map(sfix->section);
@@ -451,7 +451,7 @@ static struct ptunit_result read_nomem(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_map(sfix->section);
@@ -474,7 +474,7 @@ static struct ptunit_result read_overflow(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_map(sfix->section);
@@ -498,7 +498,7 @@ static struct ptunit_result read_nomap(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_read(sfix->section, buffer, 1, 0x0ull);
@@ -516,7 +516,7 @@ static struct ptunit_result read_unmap_map(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 	status = pt_section_map(sfix->section);
@@ -609,7 +609,7 @@ static struct ptunit_result stress(struct section_fixture *sfix)
 
 	sfix_write(sfix, bytes);
 
-	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull);
+	sfix->section = pt_mk_section(sfix->name, 0x1ull, 0x3ull, NULL);
 	ptu_ptr(sfix->section);
 
 #if defined(FEATURE_THREADS)
