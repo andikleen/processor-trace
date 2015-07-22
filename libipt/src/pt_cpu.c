@@ -94,8 +94,11 @@ int pt_cpu_parse(struct pt_cpu *cpu, const char *s)
 	char *endptr;
 	long family, model, stepping;
 
-	if (!cpu || !s)
+	if (!cpu)
 		return -pte_invalid;
+
+	if (!s)
+		return pt_cpu_read(cpu);
 
 	family = strtol(s, &endptr, 0);
 	if (s == endptr || *endptr == '\0' || *endptr != sep)
