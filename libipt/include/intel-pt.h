@@ -621,9 +621,10 @@ extern pt_export int pt_cpu_errata(struct pt_errata *errata,
 /* Parses @s which should be of format family/model[/stepping] and
  * stores the value in @cpu on success.
  * The optional stepping defaults to 0 if omitted.
+ * When @s is NULL parse the current CPU.
  *
  * Returns 0 on success.
- * Returns -pte_invalid if @cpu or @s is NULL.
+ * Returns -pte_invalid if @cpu is NULL.
  * Returns -pte_invalid if @s could not be parsed.
  */
 extern pt_export int pt_cpu_parse(struct pt_cpu *cpu, const char *s);
