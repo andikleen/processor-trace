@@ -24,7 +24,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.6)
 
 project(PT)
 
@@ -39,12 +39,16 @@ set(PT_VERSION_MINOR 4)
 set(PT_VERSION_BUILD "0" CACHE STRING "")
 set(PT_VERSION_EXT "" CACHE STRING "")
 
+set(PT_VERSION "${PT_VERSION_MAJOR}.${PT_VERSION_MINOR}.${PT_VERSION_BUILD}")
+
 add_definitions(
   -DPT_VERSION_MAJOR=${PT_VERSION_MAJOR}
   -DPT_VERSION_MINOR=${PT_VERSION_MINOR}
   -DPT_VERSION_BUILD=${PT_VERSION_BUILD}
   -DPT_VERSION_EXT=\"${PT_VERSION_EXT}\"
 )
+
+include(GNUInstallDirs)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -53,12 +57,19 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_COLOR_MAKEFILE   OFF)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+set(CMAKE_MACOSX_RPATH ON)
+
 option(FEATURE_THREADS "A small amount of multi-threading support." OFF)
 if (FEATURE_THREADS)
   add_definitions(-DFEATURE_THREADS)
 endif (FEATURE_THREADS)
 
 option(DEVBUILD "Enable compiler warnings and turn them into errors." OFF)
+
+option(PTDUMP "Enable ptdump, a packet dumper")
+option(PTXED  "Enable ptxed, an instruction flow dumper")
+option(PTTC   "Enable pttc, a test compiler")
+option(PTUNIT "Enable ptunit, a unit test system and libipt unit tests")
 
 include_directories(
   include
@@ -83,6 +94,10 @@ if (CMAKE_HOST_WIN32)
     # cl spells strtoull _strtoui64
     #
     /Dstrtoull=_strtoui64
+
+    # cl forgot to declare snprintf
+    #
+    /Dsnprintf=_snprintf_c
 
     # avoid annoying warnings about unsecure standard functions
     #
@@ -166,11 +181,6 @@ if (CMAKE_HOST_UNIX)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
 
-  # track dependencies
-  #
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -MMD")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MMD")
-
   if (DEVBUILD)
     # compiler warnings
     #
@@ -190,4 +200,16 @@ if (CMAKE_HOST_UNIX)
 endif (CMAKE_HOST_UNIX)
 
 add_subdirectory(libipt)
-add_subdirectory(ptunit)
+
+if (PTDUMP)
+  add_subdirectory(ptdump)
+endif (PTDUMP)
+if (PTXED)
+  add_subdirectory(ptxed)
+endif (PTXED)
+if (PTTC)
+  add_subdirectory(pttc)
+endif (PTTC)
+if (PTUNIT)
+  add_subdirectory(ptunit)
+endif (PTUNIT)

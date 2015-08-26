@@ -505,6 +505,8 @@ struct pt_errata {
 	/** BDM70: Intel(R) Processor Trace PSB+ Packets May Contain
 	 *         Unexpected Packets.
 	 *
+	 * Same as: SKD024.
+	 *
 	 * Some Intel Processor Trace packets should be issued only between
 	 * TIP.PGE and TIP.PGD packets.  Due to this erratum, when a TIP.PGE
 	 * packet is generated it may be preceded by a PSB+ that incorrectly
@@ -523,6 +525,25 @@ struct pt_errata {
 	 * packet produced by the abort.
 	 */
 	uint32_t bdm64:1;
+
+	/** SKD007: Intel(R) PT Buffer Overflow May Result in Incorrect Packets.
+	 *
+	 * Under complex micro-architectural conditions, an Intel PT (Processor
+	 * Trace) OVF (Overflow) packet may be issued after the first byte of a
+	 * multi-byte CYC (Cycle Count) packet, instead of any remaining bytes
+	 * of the CYC.
+	 */
+	uint32_t skd007:1;
+
+	/** SKD022: VM Entry That Clears TraceEn May Generate a FUP.
+	 *
+	 * If VM entry clears Intel(R) PT (Intel Processor Trace)
+	 * IA32_RTIT_CTL.TraceEn (MSR 570H, bit 0) while PacketEn is 1 then a
+	 * FUP (Flow Update Packet) will precede the TIP.PGD (Target IP Packet,
+	 * Packet Generation Disable).  VM entry can clear TraceEn if the
+	 * VM-entry MSR-load area includes an entry for the IA32_RTIT_CTL MSR.
+	 */
+	uint32_t skd022:1;
 
 	/* Reserve a few bytes for the future. */
 	uint32_t reserved[15];

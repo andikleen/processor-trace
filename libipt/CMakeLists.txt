@@ -56,11 +56,6 @@ set(LIBIPT_FILES
 )
 
 if (CMAKE_HOST_UNIX)
-  # build position independent
-  #
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-
   include_directories(
     internal/include/posix
   )
@@ -90,130 +85,146 @@ add_library(libipt SHARED
   ${LIBIPT_FILES}
 )
 
-set_target_properties(libipt PROPERTIES PREFIX "")
-
-add_executable(ptunit-last_ip
-  test/src/ptunit-last_ip.c
-  src/pt_last_ip.c
+set_target_properties(libipt PROPERTIES
+  PREFIX ""
+  PUBLIC_HEADER include/intel-pt.h
+  VERSION   ${PT_VERSION}
+  SOVERSION ${PT_VERSION_MAJOR}
 )
 
-add_executable(ptunit-tnt_cache
-  test/src/ptunit-tnt_cache.c
-  src/pt_tnt_cache.c
+install(TARGETS libipt
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-add_executable(ptunit-query
-  test/src/ptunit-query.c
-  src/pt_encoder.c
-  src/pt_last_ip.c
-  src/pt_packet_decoder.c
-  src/pt_sync.c
-  src/pt_tnt_cache.c
-  src/pt_time.c
-  src/pt_event_queue.c
-  src/pt_query_decoder.c
-  src/pt_packet.c
-  src/pt_decoder_function.c
-  src/pt_packet_decoder.c
-  src/pt_config.c
-  ${LIBIPT_SECTION_FILES}
-  src/pt_time.c
-)
 
-add_executable(ptunit-cpp
-  test/src/ptunit-cpp.cpp
-)
+if (PTUNIT)
+  add_executable(ptunit-last_ip
+    test/src/ptunit-last_ip.c
+    src/pt_last_ip.c
+  )
 
-add_executable(ptunit-retstack
-  test/src/ptunit-retstack.c
-  src/pt_retstack.c
-)
+  add_executable(ptunit-tnt_cache
+    test/src/ptunit-tnt_cache.c
+    src/pt_tnt_cache.c
+  )
 
-add_executable(ptunit-section
-  test/src/ptunit-section.c
-  ${LIBIPT_SECTION_FILES}
-)
+  add_executable(ptunit-query
+    test/src/ptunit-query.c
+    src/pt_encoder.c
+    src/pt_last_ip.c
+    src/pt_packet_decoder.c
+    src/pt_sync.c
+    src/pt_tnt_cache.c
+    src/pt_time.c
+    src/pt_event_queue.c
+    src/pt_query_decoder.c
+    src/pt_packet.c
+    src/pt_decoder_function.c
+    src/pt_packet_decoder.c
+    src/pt_config.c
+    ${LIBIPT_SECTION_FILES}
+    src/pt_time.c
+  )
 
-add_executable(ptunit-image
-  test/src/ptunit-image.c
-  src/pt_mapped_section.c
-  src/pt_asid.c
-  src/pt_image.c
-)
+  add_executable(ptunit-cpp
+    test/src/ptunit-cpp.cpp
+  )
 
-add_executable(ptunit-ild
-  test/src/ptunit-ild.c
-  src/pt_ild.c
-)
+  add_executable(ptunit-retstack
+    test/src/ptunit-retstack.c
+    src/pt_retstack.c
+  )
 
-add_executable(ptunit-cpu
-  test/src/ptunit-cpu.c
-  src/pt_cpu.c
-)
+  add_executable(ptunit-section
+    test/src/ptunit-section.c
+    ${LIBIPT_SECTION_FILES}
+  )
 
-add_executable(ptunit-time
-  test/src/ptunit-time.c
-  src/pt_time.c
-)
+  add_executable(ptunit-image
+    test/src/ptunit-image.c
+    src/pt_mapped_section.c
+    src/pt_asid.c
+    src/pt_image.c
+  )
 
-add_executable(ptunit-mapped_section
-  test/src/ptunit-mapped_section.c
-  src/pt_mapped_section.c
-  src/pt_asid.c
-)
+  add_executable(ptunit-ild
+    test/src/ptunit-ild.c
+    src/pt_ild.c
+  )
 
-add_executable(ptunit-asid
-  test/src/ptunit-asid.c
-  src/pt_asid.c
-)
+  add_executable(ptunit-cpu
+    test/src/ptunit-cpu.c
+    src/pt_cpu.c
+  )
 
-add_executable(ptunit-event_queue
-  test/src/ptunit-event_queue.c
-  src/pt_event_queue.c
-)
+  add_executable(ptunit-time
+    test/src/ptunit-time.c
+    src/pt_time.c
+  )
 
-add_executable(ptunit-packet
-  test/src/ptunit-packet.c
-  src/pt_encoder.c
-  src/pt_packet_decoder.c
-  src/pt_sync.c
-  src/pt_packet.c
-  src/pt_decoder_function.c
-  src/pt_config.c
-)
+  add_executable(ptunit-mapped_section
+    test/src/ptunit-mapped_section.c
+    src/pt_mapped_section.c
+    src/pt_asid.c
+  )
 
-add_executable(ptunit-sync
-  test/src/ptunit-sync.c
-  src/pt_sync.c
-  src/pt_packet.c
-)
+  add_executable(ptunit-asid
+    test/src/ptunit-asid.c
+    src/pt_asid.c
+  )
 
-add_executable(ptunit-fetch
-  test/src/ptunit-fetch.c
-  src/pt_decoder_function.c
-  src/pt_encoder.c
-  src/pt_config.c
-)
+  add_executable(ptunit-event_queue
+    test/src/ptunit-event_queue.c
+    src/pt_event_queue.c
+  )
 
-add_executable(ptunit-config
-  test/src/ptunit-config.c
-  src/pt_config.c
-)
+  add_executable(ptunit-packet
+    test/src/ptunit-packet.c
+    src/pt_encoder.c
+    src/pt_packet_decoder.c
+    src/pt_sync.c
+    src/pt_packet.c
+    src/pt_decoder_function.c
+    src/pt_config.c
+  )
 
-target_link_libraries(ptunit-last_ip ptunit)
-target_link_libraries(ptunit-tnt_cache ptunit)
-target_link_libraries(ptunit-query ptunit)
-target_link_libraries(ptunit-cpp ptunit libipt)
-target_link_libraries(ptunit-retstack ptunit)
-target_link_libraries(ptunit-section ptunit)
-target_link_libraries(ptunit-image ptunit)
-target_link_libraries(ptunit-ild ptunit)
-target_link_libraries(ptunit-cpu ptunit)
-target_link_libraries(ptunit-time ptunit)
-target_link_libraries(ptunit-mapped_section ptunit)
-target_link_libraries(ptunit-asid ptunit)
-target_link_libraries(ptunit-event_queue ptunit)
-target_link_libraries(ptunit-packet ptunit)
-target_link_libraries(ptunit-sync ptunit)
-target_link_libraries(ptunit-fetch ptunit)
-target_link_libraries(ptunit-config ptunit)
+  add_executable(ptunit-sync
+    test/src/ptunit-sync.c
+    src/pt_sync.c
+    src/pt_packet.c
+  )
+
+  add_executable(ptunit-fetch
+    test/src/ptunit-fetch.c
+    src/pt_decoder_function.c
+    src/pt_encoder.c
+    src/pt_config.c
+  )
+
+  add_executable(ptunit-config
+    test/src/ptunit-config.c
+    src/pt_config.c
+  )
+
+  target_link_libraries(ptunit-last_ip ptunit)
+  target_link_libraries(ptunit-tnt_cache ptunit)
+  target_link_libraries(ptunit-query ptunit)
+  target_link_libraries(ptunit-cpp ptunit libipt)
+  target_link_libraries(ptunit-retstack ptunit)
+  target_link_libraries(ptunit-section ptunit)
+  target_link_libraries(ptunit-image ptunit)
+  target_link_libraries(ptunit-ild ptunit)
+  target_link_libraries(ptunit-cpu ptunit)
+  target_link_libraries(ptunit-time ptunit)
+  target_link_libraries(ptunit-mapped_section ptunit)
+  target_link_libraries(ptunit-asid ptunit)
+  target_link_libraries(ptunit-event_queue ptunit)
+  target_link_libraries(ptunit-packet ptunit)
+  target_link_libraries(ptunit-sync ptunit)
+  target_link_libraries(ptunit-fetch ptunit)
+  target_link_libraries(ptunit-config ptunit)
+
+endif (PTUNIT)
