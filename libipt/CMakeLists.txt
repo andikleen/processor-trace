@@ -53,7 +53,6 @@ set(LIBIPT_FILES
   src/pt_packet.c
   src/pt_decoder_function.c
   src/pt_config.c
-  src/pt_cpu.c
 )
 
 if (CMAKE_HOST_UNIX)
@@ -67,7 +66,7 @@ if (CMAKE_HOST_UNIX)
   )
 
   set(LIBIPT_FILES ${LIBIPT_FILES} src/posix/init.c)
-  set(LIBIPT_SECTION_FILES ${LIBIPT_SECTION_FILES} src/posix/pt_section_posix.c src/posix/pt_cpuid.c)
+  set(LIBIPT_SECTION_FILES ${LIBIPT_SECTION_FILES} src/posix/pt_section_posix.c)
 endif (CMAKE_HOST_UNIX)
 
 if (CMAKE_HOST_WIN32)
@@ -149,6 +148,7 @@ add_executable(ptunit-ild
 
 add_executable(ptunit-cpu
   test/src/ptunit-cpu.c
+  src/pt_cpu.c
 )
 
 add_executable(ptunit-time
@@ -209,7 +209,6 @@ target_link_libraries(ptunit-section ptunit)
 target_link_libraries(ptunit-image ptunit)
 target_link_libraries(ptunit-ild ptunit)
 target_link_libraries(ptunit-cpu ptunit)
-target_link_libraries(ptunit-cpu libipt)
 target_link_libraries(ptunit-time ptunit)
 target_link_libraries(ptunit-mapped_section ptunit)
 target_link_libraries(ptunit-asid ptunit)
